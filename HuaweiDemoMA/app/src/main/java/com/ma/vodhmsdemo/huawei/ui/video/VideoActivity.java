@@ -1,4 +1,4 @@
-package com.ma.vodhmsdemo.huawei.ui;
+package com.ma.vodhmsdemo.huawei.ui.video;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -17,12 +17,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.ma.vodhmsdemo.huawei.R;
-import com.ma.vodhmsdemo.huawei.models.ProductModel;
+import com.ma.vodhmsdemo.huawei.data.model.ProductModel;
+import com.ma.vodhmsdemo.huawei.domain.usecases.PaymentUseCase;
+import com.ma.vodhmsdemo.huawei.ui.UserViewModel;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.ma.vodhmsdemo.huawei.utils.Constant.PRODUCT_TYPE_CONSUMABLE;
-import static com.ma.vodhmsdemo.huawei.utils.Constant.REQ_CODE_BUY;
+import static com.ma.vodhmsdemo.huawei.common.Constant.PRODUCT_TYPE_CONSUMABLE;
+import static com.ma.vodhmsdemo.huawei.common.Constant.REQ_CODE_BUY;
 
 public class VideoActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "VideoActivity";
@@ -129,7 +131,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         if(view == btnBuyNow){
             if(productViewModel.getLiveData().getValue() != null) {
-                productViewModel.getBuyIntent(VideoActivity.this,
+                new PaymentUseCase().getBuyIntent(VideoActivity.this,
                         productViewModel.getLiveData().getValue().getId(),
                         PRODUCT_TYPE_CONSUMABLE);
             }

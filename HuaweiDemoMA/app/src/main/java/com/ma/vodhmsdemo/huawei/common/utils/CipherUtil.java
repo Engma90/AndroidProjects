@@ -1,4 +1,4 @@
-package com.ma.vodhmsdemo.huawei.utils;
+package com.ma.vodhmsdemo.huawei.common.utils;
 
 
 import android.util.Log;

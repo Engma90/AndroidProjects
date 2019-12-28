@@ -13,21 +13,21 @@ import com.huawei.hmf.tasks.Task;
 import com.huawei.hms.auth.api.signin.HuaweiIdSignIn;
 import com.huawei.hms.common.ApiException;
 import com.huawei.hms.support.api.hwid.SignInHuaweiId;
-import com.ma.vodhmsdemo.huawei.models.UserModel;
-import com.ma.vodhmsdemo.huawei.repos.UserRepo;
+import com.ma.vodhmsdemo.huawei.data.model.UserModel;
+import com.ma.vodhmsdemo.huawei.data.UserRepository;
 
 public class UserViewModel extends ViewModel {
     private static final String TAG = "UserViewModel";
 
     private static MutableLiveData<UserModel> liveData;
-    LiveData<UserModel> getLiveData(){
+    public LiveData<UserModel> getLiveData(){
         if(liveData == null) {
             liveData = new MutableLiveData<>();
         }
         return liveData;
     }
 
-    void loadLiveData(Intent data){
+    public void loadLiveData(Intent data){
         UserModel userModel = null;
         Task<SignInHuaweiId> signInHuaweiIdTask = HuaweiIdSignIn.getSignedInAccountFromIntent(data);
         if (signInHuaweiIdTask.isSuccessful()) {
@@ -51,7 +51,7 @@ public class UserViewModel extends ViewModel {
         UserModel model;
         protected Bitmap doInBackground(UserModel... params) {
             this.model = params[0];
-            return UserRepo.getInstance().getUserImage(params[0].getPhotoUrl());
+            return UserRepository.getInstance().getUserImage(params[0].getPhotoUrl());
         }
 
         protected void onPostExecute(Bitmap result) {

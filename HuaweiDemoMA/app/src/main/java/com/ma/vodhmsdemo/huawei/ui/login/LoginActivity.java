@@ -1,8 +1,7 @@
-package com.ma.vodhmsdemo.huawei.ui;
+package com.ma.vodhmsdemo.huawei.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -11,13 +10,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.huawei.hms.auth.api.signin.HuaweiIdSignIn;
-import com.huawei.hms.auth.api.signin.HuaweiIdSignInClient;
-import com.huawei.hms.support.api.hwid.HuaweiIdSignInOptions;
+import com.ma.vodhmsdemo.huawei.domain.usecases.SessionUseCase;
 import com.ma.vodhmsdemo.huawei.R;
-import com.ma.vodhmsdemo.huawei.repos.SharedPref;
-import com.ma.vodhmsdemo.huawei.repos.UserRepo;
-import com.ma.vodhmsdemo.huawei.utils.Constant;
+import com.ma.vodhmsdemo.huawei.data.local.SharedPref;
+import com.ma.vodhmsdemo.huawei.data.UserRepository;
+import com.ma.vodhmsdemo.huawei.ui.UserViewModel;
+import com.ma.vodhmsdemo.huawei.ui.video.VideoActivity;
+import com.ma.vodhmsdemo.huawei.common.Constant;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "LoginActivity";
@@ -40,7 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent videoIntent = new Intent(LoginActivity.this, VideoActivity.class);
                 videoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(videoIntent);
-                UserRepo.getInstance().setIsLoggedInBefore(true);
+                UserRepository.getInstance().setIsLoggedInBefore(true);
                 finish();
             }
             else{
@@ -49,8 +48,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        if(UserRepo.getInstance().isLoggedInBefore()){
-            startLoginProcess();
+        if(UserRepository.getInstance().isLoggedInBefore()){
+            new SessionUseCase().startLoginProcess(LoginActivity.this);
         }
         else {
             progressBar.setVisibility(View.GONE);
@@ -58,17 +57,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void startLoginProcess(){
-        Log.i(TAG, "starting Login Process");
-        HuaweiIdSignInOptions mSignInOptions = new HuaweiIdSignInOptions.Builder(HuaweiIdSignInOptions.DEFAULT_SIGN_IN).requestIdToken("").build();
-        HuaweiIdSignInClient mSignInClient = HuaweiIdSignIn.getClient(LoginActivity.this, mSignInOptions);
-        startActivityForResult(mSignInClient.getSignInIntent(), Constant.REQUEST_SIGN_IN_LOGIN);
-    }
+//    private void startLoginProcess(){
+//        Log.i(TAG, "starting Login Process");
+//        HuaweiIdSignInOptions mSignInOptions = new HuaweiIdSignInOptions.Builder(HuaweiIdSignInOptions.DEFAULT_SIGN_IN).requestIdToken("").build();
+//        HuaweiIdSignInClient mSignInClient = HuaweiIdSignIn.getClient(LoginActivity.this, mSignInOptions);
+//        startActivityForResult(mSignInClient.getSignInIntent(), Constant.REQUEST_SIGN_IN_LOGIN);
+//    }
 
     @Override
     public void onClick(View view) {
         if (view == btnLoginToken) {
-            startLoginProcess();
+            new SessionUseCase().startLoginProcess(LoginActivity.this);
         }
     }
     @Override

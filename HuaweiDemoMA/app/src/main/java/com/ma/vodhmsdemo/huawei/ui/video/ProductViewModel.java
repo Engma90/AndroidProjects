@@ -1,10 +1,9 @@
-package com.ma.vodhmsdemo.huawei.ui;
+package com.ma.vodhmsdemo.huawei.ui.video;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,23 +12,20 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.huawei.hmf.tasks.Task;
-import com.huawei.hms.support.api.client.Status;
 import com.huawei.hms.support.api.entity.iap.ConsumePurchaseReq;
-import com.huawei.hms.support.api.entity.iap.GetBuyIntentReq;
 import com.huawei.hms.support.api.entity.iap.GetPurchaseReq;
 import com.huawei.hms.support.api.entity.iap.OrderStatusCode;
 import com.huawei.hms.support.api.entity.iap.SkuDetailReq;
 import com.huawei.hms.support.api.iap.BuyResultInfo;
 import com.huawei.hms.support.api.iap.ConsumePurchaseResult;
-import com.huawei.hms.support.api.iap.GetBuyIntentResult;
 import com.huawei.hms.support.api.iap.GetPurchasesResult;
 import com.huawei.hms.support.api.iap.SkuDetailResult;
 import com.huawei.hms.support.api.iap.json.Iap;
 import com.huawei.hms.support.api.iap.json.IapApiException;
 import com.huawei.hms.support.api.iap.json.IapClient;
-import com.ma.vodhmsdemo.huawei.models.ProductModel;
-import com.ma.vodhmsdemo.huawei.utils.CipherUtil;
-import com.ma.vodhmsdemo.huawei.utils.Key;
+import com.ma.vodhmsdemo.huawei.common.utils.CipherUtil;
+import com.ma.vodhmsdemo.huawei.common.utils.Key;
+import com.ma.vodhmsdemo.huawei.data.model.ProductModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,8 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static com.ma.vodhmsdemo.huawei.utils.Constant.PRODUCT_TYPE_CONSUMABLE;
-import static com.ma.vodhmsdemo.huawei.utils.Constant.REQ_CODE_BUY;
+import static com.ma.vodhmsdemo.huawei.common.Constant.PRODUCT_TYPE_CONSUMABLE;
 
 public class ProductViewModel extends ViewModel {
     private static final String TAG = "ProductViewModel";
@@ -88,65 +83,6 @@ public class ProductViewModel extends ViewModel {
         skuDetailRequest.skuIds = skuList;
         return skuDetailRequest;
     }
-
-    /**
-     * create orders for in-app products in the PMS
-     * @param activity indicates the activity object that initiates a request.
-     * @param skuId ID list of products to be queried. Each productModel ID must exist and be unique in the current app.
-     * @param type  In-app productModel type.
-     */
-    void getBuyIntent(final Activity activity, String skuId, int type) {
-        Log.d(TAG, "call getBuyIntent");
-        Log.d(TAG, "type " + type);
-        Log.d(TAG, "skuId " + skuId);
-        IapClient mClient = Iap.getIapClient(activity);
-        Task<GetBuyIntentResult> task = mClient.getBuyIntent(createGetBuyIntentReq(type, skuId));
-
-//        task.addOnCanceledListener(() -> {
-//            Log.d(TAG, "getBuyIntent, Canceled ");
-//        });
-        task.addOnSuccessListener(result -> {
-            Log.d(TAG, "getBuyIntent, onSuccess");
-            // you should pull up the page to complete the payment process
-            Status status = result.getStatus();
-                    if (status.hasResolution()) {
-                        try {
-                            status.startResolutionForResult(activity, REQ_CODE_BUY);
-                        } catch (IntentSender.SendIntentException exp) {
-                            Log.e(TAG, "startResolutionForResult, " + exp.getMessage());
-                        }
-                    }
-        });
-        task.addOnFailureListener(e -> {
-            if (e instanceof IapApiException) {
-                IapApiException apiException = (IapApiException)e;
-                int returnCode = apiException.getStatusCode();
-                Log.d(TAG, "getBuyIntent, returnCode: " + returnCode);
-                // handle error scenarios
-            } else {
-                // Other external errors
-                Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-            }
-
-        });
-    }
-
-    /**
-     * Create a GetBuyIntentReq request
-     * @param type In-app productModel type.
-     * @param skuId ID of the in-app productModel to be paid.
-     *              The in-app productModel ID is the productModel ID you set during in-app productModel configuration in AppGallery Connect.
-     * @return GetBuyIntentReq
-     */
-    private static GetBuyIntentReq createGetBuyIntentReq(int type, String skuId) {
-        GetBuyIntentReq request = new GetBuyIntentReq();
-        request.productId = skuId;
-        request.priceType = type;
-        request.developerPayload = "test";
-        return request;
-    }
-
-
 
     /**
      * consume the unconsumed purchase with type 0

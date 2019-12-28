@@ -1,4 +1,4 @@
-package com.ma.vodhmsdemo.huawei.utils;
+package com.ma.vodhmsdemo.huawei.common;
 
 public class Constant {
     public static final int REQUEST_SIGN_IN_LOGIN = 1002;

@@ -1,4 +1,4 @@
-package com.ma.vodhmsdemo.huawei.models;
+package com.ma.vodhmsdemo.huawei.data.model;
 
 public class ProductModel {
     private String id;

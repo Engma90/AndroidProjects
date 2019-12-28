@@ -1,4 +1,4 @@
-package com.ma.vodhmsdemo.huawei.models;
+package com.ma.vodhmsdemo.huawei.data.model;
 
 import android.graphics.Bitmap;
 

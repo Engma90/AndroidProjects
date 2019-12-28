@@ -1,4 +1,4 @@
-package com.ma.vodhmsdemo.huawei.repos;
+package com.ma.vodhmsdemo.huawei.data.local;
 
 import android.app.Activity;
 import android.content.Context;
